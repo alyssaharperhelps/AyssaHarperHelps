@@ -1,10 +1,10 @@
-name: Weekly TikTok Content Generation
+name: Weekly TikTok Content Generation with Approval
 
 on:
   schedule:
     # Runs every Monday at 9 AM UTC
     - cron: '0 9 * * 1'
-  workflow_dispatch: # Allows manual trigger from Actions tab
+  workflow_dispatch: # Manual trigger
 
 jobs:
   generate-content:
@@ -24,7 +24,7 @@ jobs:
         
     - name: Install dependencies
       run: |
-        pip install anthropic apify-client beautifulsoup4 requests pillow reportlab lxml
+        pip install anthropic apify-client beautifulsoup4 requests pillow reportlab lxml elevenlabs
         
     - name: Scrape TikTok for trending content
       env:
@@ -38,47 +38,80 @@ jobs:
       run: |
         python scripts/generate_content.py
         
+    - name: Generate audio with ElevenLabs
+      env:
+        ELEVENLABS_API_KEY: ${{ secrets.ELEVENLABS_API_KEY }}
+      run: |
+        python scripts/generate_audio.py
+        
     - name: Update dashboard HTML
       run: |
         python scripts/update_dashboard.py
         
-    - name: Commit and push changes
-      run: |
-        # Configure git
-        git config --local user.email "action@github.com"
-        git config --local user.name "Alyssa Harper Bot"
-        
-        # Add all new and modified files
-        git add -A
-        
-        # Check if there are changes to commit
-        if git diff --staged --quiet; then
-          echo "No changes to commit"
-          exit 0
-        fi
-        
-        # Commit the changes
-        git commit -m "🤖 Auto-generated: Week $(date +%V) - New Career Content (Days 11-13)"
-        
-        # Pull latest changes with rebase to stay in sync
-        git pull --rebase origin main || git pull --rebase origin master || true
-        
-        # Push the changes
-        git push origin HEAD:main || git push origin HEAD:master
+    - name: Create Pull Request for Review
+      uses: peter-evans/create-pull-request@v5
+      with:
+        token: ${{ secrets.GH_TOKEN }}
+        commit-message: "🤖 Week $(date +%V) - New Career Content (REVIEW NEEDED)"
+        branch: content-week-${{ github.run_number }}
+        delete-branch: true
+        title: "🎬 Week $(date +%V) Content - Review & Approve"
+        body: |
+          ## 🤖 Automated Content Generation
+          
+          **Generated:** $(date)
+          **Week:** $(date +%V)
+          
+          ### 📋 New Content Created
+          
+          This PR includes:
+          - 3 new day resources (PDFs)
+          - Updated dashboard HTML
+          - Audio files for all 3 days
+          - TikTok trend analysis
+          
+          ### ✅ Review Checklist
+          
+          - [ ] Review Day scripts for quality
+          - [ ] Check PDFs are properly formatted
+          - [ ] Listen to audio files
+          - [ ] Verify passwords are appropriate
+          - [ ] Check HTML renders correctly
+          - [ ] Approve content tone/style
+          
+          ### 📁 Files Changed
+          
+          Check the "Files changed" tab to review:
+          - New Day PDFs
+          - Audio files (.mp3)
+          - index.html updates
+          - Content metadata (new_content.json)
+          
+          ### 🚀 To Publish
+          
+          1. Review all content above
+          2. Make any edits directly in this branch if needed
+          3. Click "Merge pull request" when ready
+          4. Content will go live automatically!
+          
+          ### ⏸️ To Reject
+          
+          1. Close this PR without merging
+          2. Content will be discarded
+          3. Workflow will generate new content next week
+        labels: content-review, automated
         
     - name: Create summary
       if: always()
       run: |
-        echo "## 🎉 Content Generation Complete!" >> $GITHUB_STEP_SUMMARY
+        echo "## 🎉 Content Generated - Review Needed!" >> $GITHUB_STEP_SUMMARY
         echo "" >> $GITHUB_STEP_SUMMARY
-        echo "**Week:** $(date +%V)" >> $GITHUB_STEP_SUMMARY
-        echo "**Date:** $(date)" >> $GITHUB_STEP_SUMMARY
+        echo "**Status:** Pull Request Created" >> $GITHUB_STEP_SUMMARY
+        echo "**Action Required:** Review and merge PR to publish" >> $GITHUB_STEP_SUMMARY
         echo "" >> $GITHUB_STEP_SUMMARY
+        echo "### 📋 Generated Content" >> $GITHUB_STEP_SUMMARY
         if [ -f new_content.json ]; then
-          echo "✅ New resources created successfully" >> $GITHUB_STEP_SUMMARY
-          echo "" >> $GITHUB_STEP_SUMMARY
-          echo "### New Days Added:" >> $GITHUB_STEP_SUMMARY
-          ls -1 Day_*.pdf 2>/dev/null | tail -3 | sed 's/^/- /' >> $GITHUB_STEP_SUMMARY || echo "- Check repository for new PDFs" >> $GITHUB_STEP_SUMMARY
-        else
-          echo "❌ No new content generated" >> $GITHUB_STEP_SUMMARY
+          echo "✅ 3 new resources created" >> $GITHUB_STEP_SUMMARY
+          echo "✅ Audio files generated" >> $GITHUB_STEP_SUMMARY
+          echo "✅ Dashboard updated" >> $GITHUB_STEP_SUMMARY
         fi
