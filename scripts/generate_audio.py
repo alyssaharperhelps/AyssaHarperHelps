@@ -18,7 +18,8 @@ def generate_audio_files():
     
     # Configuration
     VOICE_ID = "Z3R5wn05IrDiVCyEkUrK"  # Arabella
-    OUTPUT_DIR = "/Users/gregmansell/Desktop/automation/11labs"
+    # Use relative path for GitHub Actions compatibility
+    OUTPUT_DIR = os.path.join(os.getcwd(), "audio_files")
     
     # Get API key
     api_key = os.environ.get('ELEVENLABS_API_KEY')
