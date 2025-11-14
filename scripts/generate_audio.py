@@ -1,23 +1,22 @@
 #!/usr/bin/env python3
 """
 ElevenLabs Audio Generator
-Generates professional voiceover for each day using Arabella voice
-Saves to local directory: /Users/gregmansell/Desktop/automation/11labs
+Generates professional voiceover for each day using Kristen voice
+Saves to local directory: audio_files/
 """
 
 import os
 import json
 from elevenlabs.client import ElevenLabs
-from elevenlabs import save
 
 def generate_audio_files():
     """
     Generate audio files for all new content using ElevenLabs
-    Voice ID: Z3R5wn05IrDiVCyEkUrK (Arabella)
+    Voice ID: CvD6hF1BJzAFN428j1cO (Kristen)
     """
     
     # Configuration
-    VOICE_ID = "Z3R5wn05IrDiVCyEkUrK"  # Arabella
+    VOICE_ID = "CvD6hF1BJzAFN428j1cO"  # Kristen
     # Use relative path for GitHub Actions compatibility
     OUTPUT_DIR = os.path.join(os.getcwd(), "audio_files")
     
@@ -30,7 +29,7 @@ def generate_audio_files():
     client = ElevenLabs(api_key=api_key)
     
     print("🎙️ Starting ElevenLabs Audio Generation...")
-    print(f"Voice: Arabella (ID: {VOICE_ID})")
+    print(f"Voice: Kristen (ID: {VOICE_ID})")
     print(f"Output: {OUTPUT_DIR}")
     print()
     
@@ -64,15 +63,17 @@ def generate_audio_files():
         print(f"   Script length: {len(script)} characters")
         
         try:
-            # Generate audio
-            audio = client.generate(
+            # Generate audio using ElevenLabs v2 API
+            audio = client.text_to_speech.convert(
+                voice_id=VOICE_ID,
                 text=script,
-                voice=VOICE_ID,
-                model="eleven_multilingual_v2"
+                model_id="eleven_multilingual_v2"
             )
             
             # Save audio file
-            save(audio, filepath)
+            with open(filepath, 'wb') as f:
+                for chunk in audio:
+                    f.write(chunk)
             
             print(f"   ✅ Saved: {filepath}")
             
@@ -94,7 +95,7 @@ def generate_audio_files():
     audio_metadata = {
         'generated_at': data.get('generated_at'),
         'voice_id': VOICE_ID,
-        'voice_name': 'Arabella',
+        'voice_name': 'Kristen',
         'output_directory': OUTPUT_DIR,
         'files': generated_files
     }
