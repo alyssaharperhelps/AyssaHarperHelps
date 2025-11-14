@@ -42,22 +42,29 @@ jobs:
       run: |
         python scripts/update_dashboard.py
         
-    - name: Commit and push changes
-      run: |
-        git config --local user.email "action@github.com"
-        git config --local user.name "Alyssa Harper Bot"
-        
-        # Pull latest changes first to avoid conflicts
-        git pull origin main --rebase || git pull origin master --rebase
-        
-        # Add all changes
-        git add .
-        
-        # Commit if there are changes
-        git diff --quiet && git diff --staged --quiet || git commit -m "🤖 Auto-generated: Week $(date +%V) - New Career Content"
-        
-        # Push with force to handle conflicts
-        git push origin HEAD:main || git push origin HEAD:master
+   name: Commit and push changes
+  run: |
+    # Configure git
+    git config --local user.email "action@github.com"
+    git config --local user.name "Alyssa Harper Bot"
+    
+    # Add all new and modified files
+    git add -A
+    
+    # Check if there are changes to commit
+    if git diff --staged --quiet; then
+      echo "No changes to commit"
+      exit 0
+    fi
+    
+    # Commit the changes
+    git commit -m "🤖 Auto-generated: Week $(date +%V) - New Career Content"
+    
+    # Pull latest changes with rebase to stay in sync
+    git pull --rebase origin main || git pull --rebase origin master || true
+    
+    # Push the changes
+    git push origin HEAD:main || git push origin HEAD:master
         
     - name: Create summary
       if: always()
