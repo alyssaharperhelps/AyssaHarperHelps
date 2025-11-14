@@ -1,0 +1,63 @@
+name: Weekly TikTok Content Generation
+
+on:
+  schedule:
+    # Runs every Monday at 9 AM UTC
+    - cron: '0 9 * * 1'
+  workflow_dispatch: # Allows manual trigger from Actions tab
+
+jobs:
+  generate-content:
+    runs-on: ubuntu-latest
+    
+    steps:
+    - name: Checkout repository
+      uses: actions/checkout@v3
+      with:
+        token: ${{ secrets.GH_TOKEN }}
+      
+    - name: Set up Python
+      uses: actions/setup-python@v4
+      with:
+        python-version: '3.10'
+        
+    - name: Install dependencies
+      run: |
+        pip install anthropic apify-client beautifulsoup4 requests pillow reportlab lxml
+        
+    - name: Scrape TikTok for trending content
+      env:
+        APIFY_API_KEY: ${{ secrets.APIFY_API_KEY }}
+      run: |
+        python scripts/scrape_tiktok.py
+        
+    - name: Generate new scripts and content
+      env:
+        ANTHROPIC_API_KEY: ${{ secrets.ANTHROPIC_API_KEY }}
+      run: |
+        python scripts/generate_content.py
+        
+    - name: Update dashboard HTML
+      run: |
+        python scripts/update_dashboard.py
+        
+    - name: Commit and push changes
+      run: |
+        git config --local user.email "action@github.com"
+        git config --local user.name "Alyssa Harper Bot"
+        git add .
+        git diff --quiet && git diff --staged --quiet || git commit -m "🤖 Auto-generated: Week $(date +%V) - New Career Content"
+        git push
+        
+    - name: Create summary
+      run: |
+        echo "## 🎉 New Content Generated!" >> $GITHUB_STEP_SUMMARY
+        echo "" >> $GITHUB_STEP_SUMMARY
+        echo "**Week:** $(date +%V)" >> $GITHUB_STEP_SUMMARY
+        echo "**Date:** $(date)" >> $GITHUB_STEP_SUMMARY
+        echo "" >> $GITHUB_STEP_SUMMARY
+        if [ -f new_content.json ]; then
+          echo "✅ New resources created successfully" >> $GITHUB_STEP_SUMMARY
+        else
+          echo "❌ No new content generated" >> $GITHUB_STEP_SUMMARY
+        fi
