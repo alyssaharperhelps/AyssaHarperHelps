@@ -1,0 +1,143 @@
+{
+  "avatar": "alyssa",
+  "name": "Alyssa Harper",
+  "niche": "Career Coach",
+  "lastUpdated": "2025-11-14T23:47:00Z",
+  "totalContent": 30,
+  "published": 18,
+  "drafts": 12,
+  "totalViews": 1300000,
+  "content": [
+    {
+      "day": 11,
+      "title": "The 5-Question Interview Prep",
+      "category": "Interview Prep",
+      "password": "STARMETHOD",
+      "views": 45000,
+      "unlocks": 3200,
+      "status": "published",
+      "script": "Stop memorizing 100 behavioral questions. Master these 5 instead. By the end of this video, you'll have a framework that works for 90% of interviews...\n\nNumber 1: Tell me about yourself. Don't give your life story - focus on your last 3-5 years of relevant experience.\n\nNumber 2: Why this company? Show you've done research. Mention something specific about their culture or recent projects.\n\nNumber 3: Describe a challenge you've overcome. Use the STAR method: Situation, Task, Action, Result.\n\nNumber 4: Where do you see yourself in 5 years? Show ambition but stay realistic and aligned with the role.\n\nNumber 5: Do you have any questions for us? ALWAYS ask thoughtful questions. It shows genuine interest.\n\nPractice these tonight and you'll crush your next interview!",
+      "keyPoints": [
+        "Master 5 core questions that cover 90% of interviews",
+        "Use the STAR method effectively",
+        "Adapt your stories to different question formats"
+      ],
+      "imagePrompt": "Professional woman in business suit and glasses, confident expression",
+      "bRollPrompt": "Office environment, interview setting, professional atmosphere",
+      "files": {
+        "pdf": "Day_11_The_5-Question_Interview_Prep.pdf",
+        "audio": "Day_11_The_5-Question_Interview_Prep.mp3",
+        "video": "Day_11_The_5-Question_Interview_Prep.mp4"
+      },
+      "createdAt": "2025-11-14T10:00:00Z",
+      "publishedAt": "2025-11-14T12:00:00Z"
+    },
+    {
+      "day": 12,
+      "title": "Resume ATS Secrets",
+      "category": "Resume Tips",
+      "password": "ATSBEAT",
+      "views": 38000,
+      "unlocks": 2800,
+      "status": "published",
+      "script": "Your resume is getting rejected before a human sees it? Here's why...\n\nMost companies use ATS (Applicant Tracking Systems) to filter resumes. If your resume isn't ATS-friendly, it never reaches the hiring manager.\n\nSecret 1: Use simple formatting. No tables, columns, or fancy graphics.\n\nSecret 2: Include exact keywords from the job description. The ATS scans for these.\n\nSecret 3: Use standard section headers: 'Work Experience', 'Education', 'Skills'.\n\nSecret 4: Save as .docx or .pdf, never .jpg or .png.\n\nSecret 5: Test your resume with an ATS checker online before applying.\n\nFix these 5 things and watch your response rate skyrocket!",
+      "keyPoints": [
+        "Beat the ATS system with simple formatting",
+        "Include keywords from job descriptions",
+        "Use standard file formats and headers"
+      ],
+      "imagePrompt": "Professional woman reviewing resume on laptop, focused expression",
+      "bRollPrompt": "Office desk, computer screen showing resume, professional setting",
+      "files": {
+        "pdf": "Day_12_Resume_ATS_Secrets.pdf",
+        "audio": "Day_12_Resume_ATS_Secrets.mp3",
+        "video": "Day_12_Resume_ATS_Secrets.mp4"
+      },
+      "createdAt": "2025-11-14T11:00:00Z",
+      "publishedAt": "2025-11-14T13:00:00Z"
+    },
+    {
+      "day": 13,
+      "title": "Salary Negotiation Framework",
+      "category": "Salary Negotiation",
+      "password": "NEVERACCEPT",
+      "views": 0,
+      "unlocks": 0,
+      "status": "draft",
+      "script": "Never accept the first offer. Here's my 3-step framework that's helped people get 10-30% more...\n\nStep 1: Pause. When they make an offer, say 'Thank you, I'm excited! Can I have 24 hours to review?'\n\nStep 2: Research. Check Glassdoor, Levels.fyi, and talk to people in similar roles. Know your worth.\n\nStep 3: Counter with confidence. 'Based on my research and the value I bring, I was hoping for $X. Is there flexibility?'\n\nPro tip: Always give a specific number, not a range. Ranges make you seem uncertain.\n\nAnd NEVER mention your previous salary unless legally required.\n\nUse this framework and you'll negotiate like a pro!",
+      "keyPoints": [
+        "Never accept the first offer immediately",
+        "Research market rates thoroughly",
+        "Counter with specific numbers, not ranges"
+      ],
+      "imagePrompt": "Professional woman in negotiation meeting, confident posture",
+      "bRollPrompt": "Corporate meeting room, professional handshake, business setting",
+      "files": {
+        "pdf": "Day_13_Salary_Negotiation_Framework.pdf",
+        "audio": "Day_13_Salary_Negotiation_Framework.mp3",
+        "video": "Day_13_Salary_Negotiation_Framework.mp4"
+      },
+      "createdAt": "2025-11-14T12:00:00Z",
+      "publishedAt": null
+    },
+    {
+      "day": 14,
+      "title": "LinkedIn Profile Optimization",
+      "category": "LinkedIn",
+      "password": "LINKEDINWIN",
+      "views": 0,
+      "unlocks": 0,
+      "status": "draft",
+      "script": "Your LinkedIn profile is costing you opportunities. Fix these 5 things today...\n\n1. Headline: Don't just list your job title. Use this formula: What you do + Who you help + Your impact. Example: 'Helping tech startups scale | Product Manager | Launched 10+ features reaching 1M+ users'\n\n2. Photo: Use a professional headshot with good lighting. No selfies, no group photos.\n\n3. About section: Tell your story in first person. Make it conversational, not a resume copy-paste.\n\n4. Experience: Focus on results, not responsibilities. Use numbers whenever possible.\n\n5. Custom URL: linkedin.com/in/yourname looks way more professional than those random numbers.\n\nMake these changes and watch your profile views double!",
+      "keyPoints": [
+        "Optimize headline with value proposition",
+        "Use professional photo and custom URL",
+        "Write about section in first person with personality"
+      ],
+      "imagePrompt": "Professional woman working on laptop, LinkedIn on screen",
+      "bRollPrompt": "Modern office, laptop showing LinkedIn profile, professional workspace",
+      "files": {
+        "pdf": "Day_14_LinkedIn_Profile_Optimization.pdf",
+        "audio": "Day_14_LinkedIn_Profile_Optimization.mp3",
+        "video": "Day_14_LinkedIn_Profile_Optimization.mp4"
+      },
+      "createdAt": "2025-11-14T13:00:00Z",
+      "publishedAt": null
+    },
+    {
+      "day": 15,
+      "title": "Email Subject Lines That Get Opened",
+      "category": "Career Growth",
+      "password": "EMAILWIN",
+      "views": 0,
+      "unlocks": 0,
+      "status": "draft",
+      "script": "Your emails are going straight to spam. Here's why...\n\nMost people use boring subject lines like 'Following Up' or 'Quick Question'.\n\nInstead, use these proven formulas:\n\nFormula 1: [Name] → [Name], this will interest you\nFormula 2: [Specific Value] → '3 ideas to improve your conversion rate'\nFormula 3: [Mutual Connection] → 'Sarah Johnson suggested I reach out'\nFormula 4: [Urgency + Value] → 'Limited spots: Free marketing audit for your company'\n\nThe key? Be specific, be relevant, be brief.\n\nAnd never use all caps or exclamation marks in professional emails!!!\n\nStart using these and watch your open rates soar!",
+      "keyPoints": [
+        "Avoid generic subject lines",
+        "Use proven formulas with specific value",
+        "Keep it brief and professional"
+      ],
+      "imagePrompt": "Professional woman composing email, focused on laptop",
+      "bRollPrompt": "Office desk, email composition screen, professional environment",
+      "files": {
+        "pdf": "Day_15_Email_Subject_Lines_That_Get_Opened.pdf",
+        "audio": "Day_15_Email_Subject_Lines_That_Get_Opened.mp3",
+        "video": "Day_15_Email_Subject_Lines_That_Get_Opened.mp4"
+      },
+      "createdAt": "2025-11-14T14:00:00Z",
+      "publishedAt": null
+    }
+  ],
+  "stats": {
+    "totalEngagement": 51000,
+    "averageViews": 27667,
+    "topCategory": "Interview Prep",
+    "weeklyGrowth": "+15%"
+  },
+  "lastScrape": {
+    "date": "2025-11-14T23:00:00Z",
+    "itemsAdded": 3,
+    "source": "TikTok Trending API"
+  }
+}
