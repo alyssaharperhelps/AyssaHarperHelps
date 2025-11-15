@@ -1,0 +1,1031 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Alyssa Harper - Admin Dashboard</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700;800&display=swap');
+        
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        
+        body { 
+            font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+            background: #f8f9fa;
+            color: #1a1a1a;
+        }
+        
+        .gradient-bg { background: linear-gradient(135deg, #ff006e, #8338ec, #00f2ea); }
+        
+        .card {
+            background: white;
+            border-radius: 12px;
+            padding: 24px;
+            box-shadow: 0 1px 3px rgba(0,0,0,0.1);
+            transition: all 0.3s;
+        }
+        
+        .card:hover {
+            box-shadow: 0 8px 20px rgba(0,0,0,0.1);
+            transform: translateY(-2px);
+        }
+        
+        .stat-card {
+            background: white;
+            border-radius: 12px;
+            padding: 24px;
+            border-left: 4px solid;
+        }
+        
+        .day-card {
+            background: white;
+            border: 2px solid #e5e7eb;
+            border-radius: 12px;
+            overflow: hidden;
+            cursor: pointer;
+            transition: all 0.3s;
+            position: relative;
+        }
+        
+        .day-card:hover {
+            border-color: #8338ec;
+            box-shadow: 0 8px 20px rgba(131, 56, 236, 0.15);
+            transform: translateY(-2px);
+        }
+
+        .delete-card-btn {
+            position: absolute;
+            top: 10px;
+            right: 10px;
+            background: #ef4444;
+            color: white;
+            border: none;
+            border-radius: 50%;
+            width: 32px;
+            height: 32px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            cursor: pointer;
+            font-size: 18px;
+            z-index: 10;
+            opacity: 0;
+            transition: opacity 0.3s;
+        }
+
+        .day-card:hover .delete-card-btn {
+            opacity: 1;
+        }
+
+        .delete-card-btn:hover {
+            background: #dc2626;
+        }
+        
+        .status-badge {
+            padding: 4px 12px;
+            border-radius: 20px;
+            font-size: 11px;
+            font-weight: 600;
+            text-transform: uppercase;
+        }
+        
+        .status-published { background: #d1fae5; color: #065f46; }
+        .status-draft { background: #fef3c7; color: #92400e; }
+        
+        .btn {
+            padding: 10px 20px;
+            border-radius: 8px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.2s;
+            border: none;
+        }
+        
+        .btn-primary {
+            background: linear-gradient(135deg, #ff006e, #8338ec);
+            color: white;
+        }
+        
+        .btn-primary:hover { opacity: 0.9; }
+        
+        .btn-secondary {
+            background: white;
+            color: #374151;
+            border: 2px solid #e5e7eb;
+        }
+        
+        .btn-secondary:hover { background: #f9fafb; }
+        
+        .btn-success {
+            background: #10b981;
+            color: white;
+        }
+        
+        .btn-success:hover { background: #059669; }
+
+        .btn-danger {
+            background: #ef4444;
+            color: white;
+        }
+
+        .btn-danger:hover { background: #dc2626; }
+        
+        .hidden { display: none !important; }
+        
+        .modal-overlay {
+            position: fixed;
+            inset: 0;
+            background: rgba(0, 0, 0, 0.7);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            z-index: 50;
+            padding: 2rem;
+            overflow-y: auto;
+        }
+        
+        .modal-content {
+            background: white;
+            border-radius: 16px;
+            max-width: 1000px;
+            width: 100%;
+            max-height: 90vh;
+            overflow-y: auto;
+            margin: auto;
+        }
+
+        .workflow-section {
+            background: #f9fafb;
+            border-radius: 12px;
+            padding: 20px;
+            border: 2px solid #e5e7eb;
+        }
+
+        .upload-area {
+            border: 3px dashed #8338ec;
+            border-radius: 15px;
+            padding: 30px;
+            text-align: center;
+            background: #f8f9ff;
+            margin: 15px 0;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+
+        .upload-area:hover {
+            background: #f0f2ff;
+            border-color: #ff006e;
+        }
+
+        .upload-area.uploaded {
+            border-color: #10b981;
+            border-style: solid;
+            background: #f0fdf4;
+        }
+
+        .upload-status {
+            margin-top: 10px;
+            padding: 10px;
+            border-radius: 8px;
+            font-weight: 600;
+            display: none;
+        }
+
+        .upload-status.success {
+            display: block;
+            background: #d1fae5;
+            color: #065f46;
+        }
+
+        .upload-status.ready {
+            display: block;
+            background: #dbeafe;
+            color: #1e40af;
+        }
+
+        input[type="file"] {
+            display: none;
+        }
+    </style>
+</head>
+<body>
+    <!-- Main Dashboard (No Password Required!) -->
+    <div id="dashboard">
+        <!-- Header -->
+        <div class="gradient-bg text-white p-8">
+            <div class="max-w-7xl mx-auto">
+                <h1 class="text-4xl font-bold mb-2">Alyssa Harper - Admin Dashboard</h1>
+                <p class="text-xl opacity-90">Content Management & Analytics</p>
+            </div>
+        </div>
+
+        <!-- Main Content -->
+        <div class="max-w-7xl mx-auto p-6">
+            <!-- Stats Overview -->
+            <div class="grid grid-cols-1 md:grid-cols-4 gap-6 mb-8">
+                <div class="stat-card border-l-blue-500">
+                    <p class="text-gray-600 text-sm font-semibold mb-1">Total Days Published</p>
+                    <p class="text-3xl font-bold" id="total-days">11</p>
+                </div>
+                <div class="stat-card border-l-green-500">
+                    <p class="text-gray-600 text-sm font-semibold mb-1">Total Views</p>
+                    <p class="text-3xl font-bold" id="total-views">1.2M</p>
+                </div>
+                <div class="stat-card border-l-purple-500">
+                    <p class="text-gray-600 text-sm font-semibold mb-1">Total Unlocks</p>
+                    <p class="text-3xl font-bold" id="total-unlocks">72.5K</p>
+                </div>
+                <div class="stat-card border-l-pink-500">
+                    <p class="text-gray-600 text-sm font-semibold mb-1">Avg Conversion</p>
+                    <p class="text-3xl font-bold" id="avg-conversion">6.8%</p>
+                </div>
+            </div>
+
+            <!-- Actions Bar -->
+            <div class="card mb-6">
+                <div class="flex flex-wrap gap-4 items-center justify-between">
+                    <div class="flex gap-3">
+                        <button id="view-daily" class="btn btn-primary" onclick="switchView('daily')">Daily View</button>
+                        <button id="view-weekly" class="btn btn-secondary" onclick="switchView('weekly')">Weekly View</button>
+                        <button id="view-topic" class="btn btn-secondary" onclick="switchView('topic')">By Topic</button>
+                    </div>
+                    <div class="flex gap-3">
+                        <button id="filter-all" class="btn btn-primary text-sm" onclick="filterContent('all')">All</button>
+                        <button id="filter-published" class="btn btn-secondary text-sm" onclick="filterContent('published')">Published</button>
+                        <button id="filter-draft" class="btn btn-secondary text-sm" onclick="filterContent('draft')">Drafts</button>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Content Grid -->
+            <div id="content-grid" class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 mb-8">
+                <!-- Content cards will be dynamically rendered here -->
+            </div>
+
+            <!-- TikTok Scraper Section -->
+            <div class="card mb-8">
+                <h2 class="text-2xl font-bold mb-4">🔍 TikTok Trend Scraper</h2>
+                <p class="text-gray-600 mb-4">Scrape trending career advice content from TikTok</p>
+                <button class="btn btn-primary" onclick="scrapeTikTok()">
+                    🚀 Scrape TikTok Trends
+                </button>
+                <div id="scraper-results" class="hidden mt-4">
+                    <div class="workflow-section">
+                        <p class="font-semibold mb-2">Scraping in progress...</p>
+                        <div class="w-full h-2 bg-gray-200 rounded">
+                            <div id="progress-fill" class="h-full bg-gradient-to-r from-purple-500 to-pink-500 rounded transition-all" style="width: 0%"></div>
+                        </div>
+                        <p class="text-sm text-gray-600 mt-2" id="scraper-status">Initializing...</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Detail Modal -->
+    <div id="detail-modal" class="modal-overlay hidden" onclick="closeModal(event)">
+        <div class="modal-content">
+            <div class="p-8">
+                <div class="flex justify-between items-start mb-6">
+                    <div>
+                        <h2 class="text-3xl font-bold mb-2" id="modal-title">Day Title</h2>
+                        <span id="modal-badge" class="status-badge">Status</span>
+                    </div>
+                    <button onclick="closeModal()" class="text-gray-500 hover:text-gray-700 text-3xl">&times;</button>
+                </div>
+
+                <!-- Tabs -->
+                <div class="flex gap-4 mb-6 border-b">
+                    <button class="tab-btn px-4 py-2 font-semibold border-b-2 border-purple-500 text-purple-600" onclick="switchTab('script')">
+                        📝 Script
+                    </button>
+                    <button class="tab-btn px-4 py-2 font-semibold text-gray-600 hover:text-purple-600" onclick="switchTab('media')">
+                        🎬 Generate Media
+                    </button>
+                    <button class="tab-btn px-4 py-2 font-semibold text-gray-600 hover:text-purple-600" onclick="switchTab('files')">
+                        📁 Files
+                    </button>
+                    <button class="tab-btn px-4 py-2 font-semibold text-gray-600 hover:text-purple-600" onclick="switchTab('publish')">
+                        🚀 Publish
+                    </button>
+                </div>
+
+                <!-- Tab Content -->
+                <div id="tab-content">
+                    <!-- Script Tab -->
+                    <div id="script-tab" class="tab-content">
+                        <div class="workflow-section mb-4">
+                            <h3 class="font-bold text-lg mb-3">Full TikTok Script</h3>
+                            <textarea 
+                                id="script-content" 
+                                class="w-full h-64 p-4 border-2 border-gray-300 rounded-lg font-mono text-sm"
+                                placeholder="Full script will appear here..."
+                            ></textarea>
+                            <div class="flex gap-3 mt-3">
+                                <button class="btn btn-primary" onclick="regenerateScript()">
+                                    🔄 Regenerate Script
+                                </button>
+                                <button class="btn btn-success" onclick="saveScript()">
+                                    💾 Save Script
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Media Generation Tab -->
+                    <div id="media-tab" class="tab-content hidden">
+                        <div class="workflow-section mb-4">
+                            <h3 class="font-bold text-lg mb-3">Step 1: Upload Files</h3>
+                            
+                            <div class="upload-area" id="image-upload-area" onclick="document.getElementById('image-upload').click()">
+                                <p class="text-lg font-semibold mb-2">📸 Upload Image</p>
+                                <p class="text-sm text-gray-600">Click or drag image file here</p>
+                                <input type="file" id="image-upload" accept="image/*" onchange="handleImageUpload(event)">
+                                <div id="image-status" class="upload-status"></div>
+                            </div>
+
+                            <div class="mt-4">
+                                <div class="flex gap-3 mb-3">
+                                    <button class="btn btn-primary flex-1" onclick="showAudioUpload()">
+                                        📤 Upload Audio
+                                    </button>
+                                    <button class="btn btn-secondary flex-1" onclick="generateAudio()">
+                                        🎙️ Generate Audio (11Labs)
+                                    </button>
+                                </div>
+                                
+                                <div id="audio-upload-section" class="hidden">
+                                    <div class="upload-area" id="audio-upload-area" onclick="document.getElementById('audio-upload').click()">
+                                        <p class="text-lg font-semibold mb-2">🎵 Upload Audio</p>
+                                        <p class="text-sm text-gray-600">Click or drag audio file here (MP3)</p>
+                                        <input type="file" id="audio-upload" accept="audio/*" onchange="handleAudioUpload(event)">
+                                        <div id="audio-status" class="upload-status"></div>
+                                    </div>
+                                </div>
+
+                                <div id="audio-generation-section" class="hidden">
+                                    <div class="workflow-section">
+                                        <p class="mb-3">Generate audio using ElevenLabs TTS</p>
+                                        <button class="btn btn-success" onclick="processAudioGeneration()">
+                                            ✨ Generate Audio Now
+                                        </button>
+                                        <div id="audio-gen-status" class="upload-status"></div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="workflow-section">
+                            <h3 class="font-bold text-lg mb-3">Step 2: Generate Video</h3>
+                            <p class="text-sm text-gray-600 mb-3">Using HeyGen API to create talking avatar video</p>
+                            <button class="btn btn-success" onclick="generateVideo()" id="generate-video-btn" disabled>
+                                🎬 Generate Video
+                            </button>
+                            <div id="video-status" class="upload-status"></div>
+                        </div>
+                    </div>
+
+                    <!-- Files Tab -->
+                    <div id="files-tab" class="tab-content hidden">
+                        <div class="workflow-section">
+                            <h3 class="font-bold text-lg mb-3">Generated Files</h3>
+                            <div id="files-list" class="space-y-2">
+                                <p class="text-gray-600 text-center py-4">No files generated yet</p>
+                            </div>
+                        </div>
+
+                        <div class="workflow-section mt-4">
+                            <h3 class="font-bold text-lg mb-3">Generate PDF Resource</h3>
+                            <button class="btn btn-primary" onclick="generatePDF()">
+                                📄 Generate PDF
+                            </button>
+                            <div id="pdf-status" class="upload-status"></div>
+                            
+                            <div id="push-section" class="hidden mt-4">
+                                <button class="btn btn-success text-lg" onclick="pushToSite()">
+                                    🚀 PUSH TO SITE
+                                </button>
+                                <p class="text-sm text-gray-600 mt-2">This will create a new content card on the public site with password protection</p>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Publish Tab -->
+                    <div id="publish-tab" class="tab-content hidden">
+                        <div class="workflow-section">
+                            <h3 class="font-bold text-lg mb-3">Publish to TikTok</h3>
+                            <p class="text-sm text-gray-600 mb-4">Schedule or publish immediately to TikTok</p>
+                            
+                            <div class="mb-4">
+                                <label class="block text-sm font-semibold mb-2">Publish Time</label>
+                                <select class="w-full p-3 border-2 border-gray-300 rounded-lg">
+                                    <option>Now</option>
+                                    <option>Schedule for later</option>
+                                </select>
+                            </div>
+
+                            <button class="btn btn-success" onclick="publishToTikTok()">
+                                🚀 Publish to TikTok
+                            </button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // Global state
+        let contentData = [];
+        let currentView = 'daily';
+        let currentFilter = 'all';
+        let currentDay = null;
+        let uploadedFiles = {
+            image: null,
+            audio: null,
+            video: null,
+            pdf: null
+        };
+
+        // Initialize dashboard on page load
+        window.onload = function() {
+            contentData = generateMockContent();
+            renderContent();
+            updateStats();
+        };
+
+        // Render content grid
+        function renderContent() {
+            const grid = document.getElementById('content-grid');
+            let filtered = contentData;
+
+            if (currentFilter === 'published') {
+                filtered = filtered.filter(c => c.status === 'published');
+            } else if (currentFilter === 'draft') {
+                filtered = filtered.filter(c => c.status === 'draft');
+            }
+
+            grid.innerHTML = filtered.map(content => `
+                <div class="day-card" onclick="openDetail(${content.day})">
+                    <button class="delete-card-btn" onclick="event.stopPropagation(); deleteCard(${content.day})" title="Delete this card">
+                        ×
+                    </button>
+                    <div class="p-6">
+                        <div class="flex justify-between items-start mb-3">
+                            <span class="text-2xl font-bold">Day ${content.day}</span>
+                            <span class="status-badge status-${content.status}">${content.status}</span>
+                        </div>
+                        <h3 class="font-bold text-lg mb-2">${content.title}</h3>
+                        <p class="text-sm text-gray-600 mb-4">${content.category}</p>
+                        
+                        <div class="grid grid-cols-2 gap-4 text-sm">
+                            <div>
+                                <p class="text-gray-500">Views</p>
+                                <p class="font-bold">${formatNumber(content.views)}</p>
+                            </div>
+                            <div>
+                                <p class="text-gray-500">Unlocks</p>
+                                <p class="font-bold">${formatNumber(content.unlocks)}</p>
+                            </div>
+                        </div>
+
+                        ${content.files && Object.keys(content.files).length > 0 ? `
+                            <div class="mt-4 pt-4 border-t">
+                                <p class="text-xs text-gray-500 mb-2">Files:</p>
+                                <div class="flex gap-2">
+                                    ${content.files.pdf ? '<span class="text-xs bg-red-100 text-red-800 px-2 py-1 rounded">PDF</span>' : ''}
+                                    ${content.files.audio ? '<span class="text-xs bg-blue-100 text-blue-800 px-2 py-1 rounded">Audio</span>' : ''}
+                                    ${content.files.video ? '<span class="text-xs bg-purple-100 text-purple-800 px-2 py-1 rounded">Video</span>' : ''}
+                                </div>
+                            </div>
+                        ` : ''}
+                    </div>
+                </div>
+            `).join('');
+        }
+
+        function deleteCard(day) {
+            if (confirm(`Are you sure you want to delete Day ${day}? This cannot be undone.`)) {
+                contentData = contentData.filter(c => c.day !== day);
+                renderContent();
+                updateStats();
+                alert(`Day ${day} has been deleted.`);
+            }
+        }
+
+        function openDetail(day) {
+            currentDay = day;
+            const content = contentData.find(c => c.day === day);
+            
+            document.getElementById('modal-title').textContent = `Day ${day}: ${content.title}`;
+            document.getElementById('modal-badge').textContent = content.status;
+            document.getElementById('modal-badge').className = `status-badge status-${content.status}`;
+            document.getElementById('script-content').value = content.script || '';
+            
+            switchTab('script');
+            document.getElementById('detail-modal').classList.remove('hidden');
+            updateFilesList(content);
+        }
+
+        function updateFilesList(content) {
+            const filesList = document.getElementById('files-list');
+            
+            if (content.files && Object.keys(content.files).length > 0) {
+                filesList.innerHTML = Object.entries(content.files)
+                    .filter(([type, url]) => url && url !== '#')
+                    .map(([type, url]) => `
+                        <div class="p-3 bg-gray-50 rounded flex justify-between items-center">
+                            <span class="font-semibold">📄 ${type.toUpperCase()}</span>
+                            <a href="${url}" target="_blank" class="text-purple-600 hover:underline">View/Download</a>
+                        </div>
+                    `).join('');
+            } else {
+                filesList.innerHTML = '<p class="text-gray-600 text-center py-4">No files generated yet</p>';
+            }
+        }
+
+        function switchTab(tab) {
+            document.querySelectorAll('.tab-content').forEach(t => t.classList.add('hidden'));
+            document.querySelectorAll('.tab-btn').forEach(b => {
+                b.classList.remove('border-purple-500', 'text-purple-600');
+                b.classList.add('text-gray-600');
+            });
+
+            document.getElementById(`${tab}-tab`).classList.remove('hidden');
+            event.target.classList.add('border-purple-500', 'text-purple-600');
+            event.target.classList.remove('text-gray-600');
+        }
+
+        function regenerateScript() {
+            const content = contentData.find(c => c.day === currentDay);
+            const scriptArea = document.getElementById('script-content');
+            
+            if (confirm('Regenerate script using AI? This will replace the current script.')) {
+                scriptArea.value = 'Generating new script...';
+                
+                setTimeout(() => {
+                    const newScript = `Hey! ${content.title}\n\n[Opening Hook]\n\nHere's what most people get wrong...\n\n[Main Content - 3 Key Points]\n\n1. First major tip\n2. Second important strategy\n3. Third game-changing insight\n\n[Call to Action]\n\nDM me "${content.password}" for the full PDF guide!\n\n[Closing]`;
+                    scriptArea.value = newScript;
+                    content.script = newScript;
+                    alert('✅ Script regenerated successfully!');
+                }, 2000);
+            }
+        }
+
+        function saveScript() {
+            const content = contentData.find(c => c.day === currentDay);
+            const scriptArea = document.getElementById('script-content');
+            content.script = scriptArea.value;
+            alert('✅ Script saved successfully!');
+        }
+
+        function handleImageUpload(event) {
+            const file = event.target.files[0];
+            if (file) {
+                uploadedFiles.image = file;
+                const uploadArea = document.getElementById('image-upload-area');
+                const status = document.getElementById('image-status');
+                
+                uploadArea.classList.add('uploaded');
+                status.className = 'upload-status ready';
+                status.textContent = `✅ ${file.name} uploaded - Ready for video generation`;
+                
+                checkVideoGenerationReady();
+            }
+        }
+
+        function handleAudioUpload(event) {
+            const file = event.target.files[0];
+            if (file) {
+                uploadedFiles.audio = file;
+                const uploadArea = document.getElementById('audio-upload-area');
+                const status = document.getElementById('audio-status');
+                
+                uploadArea.classList.add('uploaded');
+                status.className = 'upload-status ready';
+                status.textContent = `✅ ${file.name} uploaded - Ready for video generation`;
+                
+                checkVideoGenerationReady();
+            }
+        }
+
+        function showAudioUpload() {
+            document.getElementById('audio-upload-section').classList.remove('hidden');
+            document.getElementById('audio-generation-section').classList.add('hidden');
+        }
+
+        function generateAudio() {
+            document.getElementById('audio-upload-section').classList.add('hidden');
+            document.getElementById('audio-generation-section').classList.remove('hidden');
+        }
+
+        function processAudioGeneration() {
+            const status = document.getElementById('audio-gen-status');
+            status.className = 'upload-status success';
+            status.textContent = '🎙️ Generating audio with ElevenLabs...';
+            
+            setTimeout(() => {
+                status.textContent = '✅ Audio generated successfully - Ready for video generation';
+                uploadedFiles.audio = 'generated';
+                checkVideoGenerationReady();
+            }, 3000);
+        }
+
+        function checkVideoGenerationReady() {
+            const btn = document.getElementById('generate-video-btn');
+            if (uploadedFiles.image && uploadedFiles.audio) {
+                btn.disabled = false;
+                btn.classList.remove('opacity-50');
+            }
+        }
+
+        function generateVideo() {
+            const status = document.getElementById('video-status');
+            status.className = 'upload-status success';
+            status.textContent = '🎬 Generating video with HeyGen...';
+            
+            setTimeout(() => {
+                status.textContent = '✅ Video generated successfully!';
+                uploadedFiles.video = 'generated';
+                
+                const content = contentData.find(c => c.day === currentDay);
+                if (!content.files) content.files = {};
+                content.files.video = '#video-url';
+                
+                alert('🎉 Video generated! You can now download it or publish to TikTok.');
+            }, 5000);
+        }
+
+        function generatePDF() {
+            const status = document.getElementById('pdf-status');
+            status.className = 'upload-status success';
+            status.textContent = '📄 Generating PDF resource...';
+            
+            setTimeout(() => {
+                status.textContent = '✅ PDF generated successfully!';
+                uploadedFiles.pdf = 'generated';
+                
+                const content = contentData.find(c => c.day === currentDay);
+                if (!content.files) content.files = {};
+                content.files.pdf = `Day_${currentDay}_${content.title.replace(/\s+/g, '_')}.pdf`;
+                
+                document.getElementById('push-section').classList.remove('hidden');
+                updateFilesList(content);
+            }, 2000);
+        }
+
+        function pushToSite() {
+            const content = contentData.find(c => c.day === currentDay);
+            
+            if (confirm(`Push Day ${currentDay} to the public site?\n\nThis will:\n- Create a new content card\n- Set up password protection\n- Make files available for download`)) {
+                alert('🚀 Pushing to site...');
+                
+                setTimeout(() => {
+                    content.status = 'published';
+                    renderContent();
+                    alert(`✅ Day ${currentDay} successfully published to site!\n\nUsers can now access it with password: ${content.password}`);
+                }, 2000);
+            }
+        }
+
+        function publishToTikTok() {
+            const content = contentData.find(c => c.day === currentDay);
+            
+            if (!content.files || !content.files.video) {
+                alert('⚠️ Please generate a video first!');
+                return;
+            }
+            
+            if (confirm(`Publish Day ${currentDay} to TikTok now?`)) {
+                alert(`🚀 Publishing to TikTok!\n\nScheduled for posting.`);
+            }
+        }
+
+        function scrapeTikTok() {
+            const resultsDiv = document.getElementById('scraper-results');
+            const statusText = document.getElementById('scraper-status');
+            const progressFill = document.getElementById('progress-fill');
+            
+            resultsDiv.classList.remove('hidden');
+            
+            const queries = [
+                'Salary negotiation tips',
+                'Career advice',
+                'LinkedIn templates',
+                'Interview questions',
+                'Resume tips'
+            ];
+            
+            let currentQuery = 0;
+            const interval = setInterval(() => {
+                if (currentQuery < queries.length) {
+                    const progress = ((currentQuery + 1) / queries.length) * 100;
+                    progressFill.style.width = progress + '%';
+                    statusText.textContent = `Scraping: "${queries[currentQuery]}"...`;
+                    currentQuery++;
+                } else {
+                    clearInterval(interval);
+                    progressFill.style.width = '100%';
+                    statusText.textContent = '✅ Scraping complete! Found 47 trending videos.';
+                    
+                    setTimeout(() => {
+                        addScrapedContent();
+                    }, 1000);
+                }
+            }, 1000);
+        }
+
+        function addScrapedContent() {
+            const scrapedContent = [
+                {
+                    day: contentData.length + 1,
+                    title: "5 Phrases That Got Me Promoted",
+                    category: "Career Growth",
+                    password: "PROMOTE" + (contentData.length + 1),
+                    views: 0,
+                    unlocks: 0,
+                    status: "draft",
+                    script: "Trending content from TikTok...",
+                    files: {}
+                },
+                {
+                    day: contentData.length + 2,
+                    title: "Resume Template That Gets Interviews",
+                    category: "Resume Tips",
+                    password: "RESUME" + (contentData.length + 2),
+                    views: 0,
+                    unlocks: 0,
+                    status: "draft",
+                    script: "Trending content from TikTok...",
+                    files: {}
+                },
+                {
+                    day: contentData.length + 3,
+                    title: "LinkedIn Profile Secrets",
+                    category: "LinkedIn",
+                    password: "LINKEDIN" + (contentData.length + 3),
+                    views: 0,
+                    unlocks: 0,
+                    status: "draft",
+                    script: "Trending content from TikTok...",
+                    files: {}
+                },
+                {
+                    day: contentData.length + 4,
+                    title: "Email Subject Lines That Work",
+                    category: "Career Growth",
+                    password: "EMAIL" + (contentData.length + 4),
+                    views: 0,
+                    unlocks: 0,
+                    status: "draft",
+                    script: "Trending content from TikTok...",
+                    files: {}
+                },
+                {
+                    day: contentData.length + 5,
+                    title: "Networking Without Being Awkward",
+                    category: "Career Growth",
+                    password: "NETWORK" + (contentData.length + 5),
+                    views: 0,
+                    unlocks: 0,
+                    status: "draft",
+                    script: "Trending content from TikTok...",
+                    files: {}
+                }
+            ];
+            
+            contentData = [...contentData, ...scrapedContent];
+            renderContent();
+            updateStats();
+            
+            alert(`✅ Added ${scrapedContent.length} new content cards from TikTok trends!`);
+        }
+
+        function updateStats() {
+            const totalDays = contentData.filter(c => c.status === 'published').length;
+            const totalViews = contentData.reduce((sum, c) => sum + c.views, 0);
+            const totalUnlocks = contentData.reduce((sum, c) => sum + c.unlocks, 0);
+            const avgConversion = totalViews > 0 ? ((totalUnlocks / totalViews) * 100).toFixed(1) : 0;
+            
+            document.getElementById('total-days').textContent = totalDays;
+            document.getElementById('total-views').textContent = formatNumber(totalViews);
+            document.getElementById('total-unlocks').textContent = formatNumber(totalUnlocks);
+            document.getElementById('avg-conversion').textContent = avgConversion + '%';
+        }
+
+        function switchView(view) {
+            currentView = view;
+            ['daily', 'weekly', 'topic'].forEach(v => {
+                const btn = document.getElementById(`view-${v}`);
+                btn.className = v === view ? 'btn btn-primary' : 'btn btn-secondary';
+            });
+            renderContent();
+        }
+
+        function filterContent(filter) {
+            currentFilter = filter;
+            ['all', 'published', 'draft'].forEach(f => {
+                const btn = document.getElementById(`filter-${f}`);
+                btn.className = f === filter ? 'btn btn-primary text-sm' : 'btn btn-secondary text-sm';
+            });
+            renderContent();
+        }
+
+        function closeModal(event) {
+            if (!event || event.target.closest('.modal-content') === null) {
+                document.getElementById('detail-modal').classList.add('hidden');
+            }
+        }
+
+        function formatNumber(num) {
+            if (num >= 1000000) return (num / 1000000).toFixed(1) + 'M';
+            if (num >= 1000) return (num / 1000).toFixed(1) + 'K';
+            return num.toString();
+        }
+
+        function generateMockContent() {
+            return [
+                {
+                    day: 1,
+                    title: "The Resume That Got Me 5 Interviews",
+                    category: "Resume Tips",
+                    password: "RESUMEWIN",
+                    views: 125000,
+                    unlocks: 8500,
+                    status: "published",
+                    script: "Hey! Your resume is probably getting rejected before a human even sees it. Here's exactly what I changed to go from zero responses to 5 interviews in one week...",
+                    files: {
+                        pdf: "#",
+                        audio: "#",
+                        video: "#"
+                    }
+                },
+                {
+                    day: 2,
+                    title: "3 LinkedIn Messages That Always Get Responses",
+                    category: "LinkedIn",
+                    password: "LINKEDINWIN",
+                    views: 98000,
+                    unlocks: 6200,
+                    status: "published",
+                    script: "Stop using 'I'd love to connect.' Here are the exact 3 LinkedIn message templates that get me 80% response rates...",
+                    files: {
+                        pdf: "#",
+                        audio: "#"
+                    }
+                },
+                {
+                    day: 3,
+                    title: "Salary Negotiation: The Framework",
+                    category: "Salary Negotiation",
+                    password: "NEGOTIATE",
+                    views: 156000,
+                    unlocks: 11200,
+                    status: "published",
+                    script: "Never accept the first offer. Here's my 3-step framework that helped people get 10-30% more...",
+                    files: {
+                        pdf: "#",
+                        audio: "#",
+                        video: "#"
+                    }
+                },
+                {
+                    day: 4,
+                    title: "Meeting Control Phrases That Work",
+                    category: "Career Growth",
+                    password: "MEETINGWIN",
+                    views: 87000,
+                    unlocks: 5400,
+                    status: "published",
+                    script: "Use these 5 phrases in your next meeting to sound like a leader, even if you're not...",
+                    files: {
+                        pdf: "#"
+                    }
+                },
+                {
+                    day: 5,
+                    title: "The Email Subject Line Formula",
+                    category: "Career Growth",
+                    password: "EMAILOPEN",
+                    views: 72000,
+                    unlocks: 4800,
+                    status: "published",
+                    script: "Your emails are going to spam. Here's the exact formula that gets 70% open rates...",
+                    files: {
+                        pdf: "#",
+                        audio: "#"
+                    }
+                },
+                {
+                    day: 6,
+                    title: "Interview Question: Tell Me About Yourself",
+                    category: "Interview Prep",
+                    password: "TELLME",
+                    views: 143000,
+                    unlocks: 9700,
+                    status: "published",
+                    script: "This is the most important interview question, and most people blow it. Here's the exact structure I use...",
+                    files: {
+                        pdf: "#",
+                        audio: "#",
+                        video: "#"
+                    }
+                },
+                {
+                    day: 7,
+                    title: "How to Ask for a Promotion",
+                    category: "Career Growth",
+                    password: "PROMOTE",
+                    views: 91000,
+                    unlocks: 6100,
+                    status: "published",
+                    script: "Don't just ask for a promotion. Use this strategy to make them offer it to you...",
+                    files: {
+                        pdf: "#"
+                    }
+                },
+                {
+                    day: 8,
+                    title: "LinkedIn Profile That Gets Recruiters",
+                    category: "LinkedIn",
+                    password: "PROFILE",
+                    views: 102000,
+                    unlocks: 7300,
+                    status: "published",
+                    script: "Your LinkedIn profile is costing you opportunities. Fix these 5 things today...",
+                    files: {
+                        pdf: "#",
+                        audio: "#"
+                    }
+                },
+                {
+                    day: 9,
+                    title: "Networking Without Being Awkward",
+                    category: "Career Growth",
+                    password: "NETWORK",
+                    views: 67000,
+                    unlocks: 4200,
+                    status: "published",
+                    script: "Networking doesn't have to be weird. Here's how to build real professional connections...",
+                    files: {
+                        pdf: "#"
+                    }
+                },
+                {
+                    day: 10,
+                    title: "Why You Didn't Get The Job",
+                    category: "Interview Prep",
+                    password: "WHYNOT",
+                    views: 134000,
+                    unlocks: 8900,
+                    status: "published",
+                    script: "You did great in the interview but didn't get the job. Here's probably why...",
+                    files: {
+                        pdf: "#",
+                        audio: "#",
+                        video: "#"
+                    }
+                },
+                {
+                    day: 11,
+                    title: "The 5-Question Interview Prep",
+                    category: "Interview Prep",
+                    password: "STARMETHOD",
+                    views: 45000,
+                    unlocks: 3200,
+                    status: "published",
+                    script: "Stop memorizing 100 behavioral questions. Master these 5 instead...",
+                    files: {
+                        pdf: "#",
+                        audio: "#",
+                        video: "#"
+                    }
+                },
+                {
+                    day: 12,
+                    title: "Resume ATS Hacks",
+                    category: "Resume Tips",
+                    password: "ATSBEAT",
+                    views: 0,
+                    unlocks: 0,
+                    status: "draft",
+                    script: "Your resume never reaches a human. Here's how to beat the ATS system...",
+                    files: {}
+                },
+                {
+                    day: 13,
+                    title: "Career Pivot Strategy",
+                    category: "Career Growth",
+                    password: "PIVOT",
+                    views: 0,
+                    unlocks: 0,
+                    status: "draft",
+                    script: "Want to change careers? Here's the exact playbook I used...",
+                    files: {}
+                }
+            ];
+        }
+    </script>
+</body>
+</html>
